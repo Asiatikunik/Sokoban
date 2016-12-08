@@ -1,16 +1,19 @@
-all: principal
-	./principal
+#Makefile du projet Sokoban
 
-principal: principal.o affiche.o
-	gcc -o principal principal.o affiche.o -luvsqgraphics `sdl-config --libs` -lm -lSDL_ttf
+all: main
+	./main
 
-principal.o: principal.c affiche.h
-	gcc -c principal.c
+main: main.o affiche.o action.o
+	gcc -o main main.o affiche.o action.o -luvsqgraphics `sdl-config --libs` -lm -lSDL_ttf
+
+main.o: main.c affiche.h
+	gcc -c -g -Wall main.c
 
 affiche.o: affiche.c affiche.h
-	gcc -c `sdl-config --cflags` affiche.c
+	gcc -c -g -Wall `sdl-config --cflags` affiche.c
+	
 
 clean:
 	rm -f affiche.o
-	rm -f principal.o
-	rm -f principal
+	rm -f main.o
+	rm -f main
