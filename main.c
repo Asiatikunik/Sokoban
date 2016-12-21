@@ -20,11 +20,13 @@ int main(){
 	//afficherTab(t);
 
     initialiser_affichage();
-    afficher_sokoban(a); 
+    afficher_sokoban(a,t); 
 
     do{
     	a = recuperer_action();
-    	afficher_sokoban(a);
+    	afficher_sokoban(a,t);
+    	a = modifier_sudoku_action (a); 
+
     }while(mode_action(a)!=QUITTER);
 
 	//wait_escape();

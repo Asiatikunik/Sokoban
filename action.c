@@ -16,11 +16,12 @@ ACTION recuperer_action() {
 		A.y = P.y/TAILLE_CASE;
 		return A;
 	}
-	if (P.x <   LARG_BOUTON) { A.mode = SAISIR;   return A; }
-	if (P.x < 2*LARG_BOUTON) { A.mode = JOUER;    return A; }
-	if (P.x < 3*LARG_BOUTON) { A.mode = RESOUDRE; return A; }
-	if (P.x < 4*LARG_BOUTON) { A.mode = QUITTER;  return A; } 
-	
+	if (P.x <   LARG_BOUTON) { A.mode = JOUER;     return A; }
+	if (P.x < 2*LARG_BOUTON) { A.mode = SELECT; return A; }
+	if (P.x < 3*LARG_BOUTON) { A.mode = PREC; return A; }
+	if (P.x < 4*LARG_BOUTON) { A.mode = SUIV;   return A; }
+	if (P.x < 5*LARG_BOUTON) { A.mode = QUITTER;   return A; } 
+
 	return A;
 }
 

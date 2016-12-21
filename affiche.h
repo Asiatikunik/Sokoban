@@ -12,7 +12,11 @@ void initialiser_affichage();
 TABLEAU selection_stage(int stage, TABLEAU t);
 int cree_tableau_jeu();
 int tableau_chiffe(int caractere);
+ACTION modifier_sudoku_action (ACTION A);
 
-void afficher_sokoban(ACTION A);
+
+void afficher_sokoban(ACTION A,TABLEAU T);
+void afficher_jeu(TABLEAU T);
+
 
 #endif

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "jeu.h"
 #include "constantes.h"
+#include "action.h"
 
 
 TABLEAU initTab(TABLEAU t) {
@@ -58,3 +59,8 @@ void afficherTab2(TABLEAU t){
 	}
  
 }*/
+
+ACTION resoudre_sokoban(ACTION A){
+
+	return A;
+	}

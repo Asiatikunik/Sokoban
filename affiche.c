@@ -50,7 +50,7 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
 int tableau_chiffe(int caractere){
 
     if(caractere=='#')      //1 # mur
-        return 7;
+        return 1;
     if(caractere=='$')      //2 $ caisse
         return 2;
     if(caractere=='.')      //3 . objectif
@@ -65,10 +65,7 @@ int tableau_chiffe(int caractere){
     return -2;
 }
 
-// Affiche un bouton
-// numero donne le rang du bouton en les comptant à partir de la gauche et à partir de 0
-// texte est le texte dans le bouton
-// la_selection vaut 1 si c'est le mode actif et 0 sinon
+// A MODIFIER, POUR LES COULEURS DES BOUTONS
 void afficher_un_bouton(int numero, char *texte, int la_selection) {
     // rouge si c'est le bouton actif et noir sinon
     COULEUR coul_texte = la_selection*rouge + (1 - la_selection)*noir;
@@ -84,20 +81,98 @@ void afficher_un_bouton(int numero, char *texte, int la_selection) {
 }
 
 
-// Affiche les 4 boutons
+
 void afficher_les_boutons(ACTION A) {
     // Le 3ème argument vaut 0 ou 1 selon que c'est le mode actif ou non
-    afficher_un_bouton(0,"SAISIR", A.mode==SAISIR);
-    afficher_un_bouton(1,"JOUER",  A.mode==JOUER);
-    afficher_un_bouton(2,"SOLVE",  A.mode==RESOUDRE);
-    afficher_un_bouton(3,"QUITTER",A.mode==QUITTER);
+    afficher_un_bouton(0,"JOUER", A.mode==JOUER);
+    afficher_un_bouton(1,"SELECT",  A.mode==SELECT);
+    afficher_un_bouton(2,"PREC",  A.mode==PREC);
+    afficher_un_bouton(3,"SUIV",  A.mode==SUIV);
+    afficher_un_bouton(4,"QUITTER",A.mode==QUITTER);
 }
 
 
-// Affiche l'ensemble du sudoku
-void afficher_sokoban(ACTION A) {
+
+void afficher_sokoban(ACTION A,TABLEAU T) {
     fill_screen(noir);
-    //afficher_grille();
+    afficher_jeu(T);
     afficher_les_boutons(A);
     //affiche_all();
 }
+
+
+ACTION modifier_sudoku_action (ACTION A) {
+ 
+    if (A.mode == JOUER) {
+        A = resoudre_sokoban(A);
+        return A; 
+    }
+
+    if (A.mode == SELECT) {
+        return A; 
+    }
+
+
+    if (A.mode == PREC) {
+        return A; 
+    }
+        
+
+    if (A.mode == SUIV) {
+        return A; 
+    }   
+    
+    if (A.mode == QUITTER){
+        return A;
+    }
+
+    return A;
+    
+}
+
+void afficher_jeu(TABLEAU T) {
+    
+    POINT hg, bd;
+    hg.x = 100; hg.y = 500;
+    bd.x = hg.x+TAILLE_CASE_JEU; bd.y = hg.y+TAILLE_CASE_JEU;
+    //draw_fill_rectangle(hg,bd,bleu);
+    //draw_line(hg,bd,bleu);
+    //graph_croix(hg,bd);
+    
+    int n, m;
+
+    for(n=0;n<T.taille;n++) {
+        hg.x = hg.x+TAILLE_CASE_JEU; bd.x = bd.x+TAILLE_CASE_JEU;
+        hg.y = 500; bd.y = 525;
+        for(m=0;m<T.taille;m++){
+            hg.y = hg.y-TAILLE_CASE_JEU; bd.y = bd.y-TAILLE_CASE_JEU;
+
+            if(T.array[n][m]==1)      //1 # mur
+                draw_fill_rectangle(hg,bd,gris);
+            if(T.array[n][m]==2)      //2 $ caisse
+                draw_fill_rectangle(hg,bd,marron);
+            if(T.array[n][m]==3)      //3 . objectif
+                //draw_fill_rectangle(hg,bd,jaune);
+                graph_croix(hg,bd);
+            if(T.array[n][m]==4)      //4 @ homme
+                draw_fill_rectangle(hg,bd,cyan);  
+            
+        }
+    }
+    
+}
+
+
+void graph_croix(POINT haut_gauche,POINT bas_droit) {
+    POINT haut_droit, bas_gauche;
+
+    haut_droit.x = bas_droit.x; //hg.x=g.x+TAILLE_CASE_JEU;
+    haut_droit.y = haut_gauche.y;
+
+    bas_gauche.x = haut_gauche.x;
+    bas_gauche.y = bas_droit.y;
+
+    draw_line(haut_gauche,bas_droit,COUL_CROIX);
+    draw_line(bas_gauche,haut_droit,COUL_CROIX); 
+}
+
