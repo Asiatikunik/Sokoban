@@ -28,9 +28,12 @@ int main(){
 
     do{
     	a = recuperer_action();
-    	if (a.mode == PRED || a.mode == SUIV)
+    	if (a.mode == PRED || a.mode == SUIV) {
         	t=initTab(t);
-    	stage=modifier_stage(a, stage); 
+            stage=modifier_stage(a, stage);
+        }
+        //t=apres_clic_mouvement(t,a);
+        t=apres_clic_mouvement(t, a);
     	t = modifier_sudoku_action(a,t,stage); 
     	afficher_sokoban(a,t,stage);
     	//test(t);

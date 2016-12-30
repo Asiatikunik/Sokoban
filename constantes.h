@@ -13,8 +13,13 @@
 #define INIT   3
 #define PRED   4
 #define SUIV   5
+#define GAUCHE 6
+#define DROITE 7
+#define HAUT   8
+#define BAS    9
+#define RIEN   10
 
-#define LARGEUR_AFFICHAGE 1000
+#define LARGEUR_AFFICHAGE 1005
 #define HAUTEUR_AFFICHAGE 650
 #define TAILLE_CASE 43
 #define LARG_BOUTON ((N*TAILLE_CASE)/5.6)
@@ -29,7 +34,8 @@
 //A changer les valeurs
 //#define COUL_FOND antiquewhite
 #define COUL_FOND argent
-#define COUL_BORD tan
+#define COUL_BORD bleu
 #define COUL_CROIX jaune
+#define COUL_BOUTON lightskyblue
 
 #endif

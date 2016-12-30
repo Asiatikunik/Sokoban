@@ -89,7 +89,25 @@ void afficher_les_boutons(ACTION A) {
     afficher_un_bouton(2,"REDO", A.mode==REDO);
     afficher_un_bouton(3,"INIT", A.mode==INIT);
     afficher_un_bouton(4,"PRED", A.mode==PRED);
-    afficher_un_bouton(5,"SUIV", A.mode==SUIV);
+    afficher_un_bouton(5,"SUIV", A.mode==SUIV);   
+}
+
+void afficher_bouton_deplacement(){
+    POINT haut1, haut2, bas1, bas2, gauche1, gauche2, droite1, droite2;
+
+    haut1.x=900; haut1.y=550;
+    haut2.x=950; haut2.y=500;
+    droite1.x=950; droite1.y=500;
+    droite2.x=1000; droite2.y=450;
+    bas1.x=900; bas1.y=450;
+    bas2.x=950; bas2.y=400;
+    gauche1.x=850; gauche1.y=500;
+    gauche2.x=900; gauche2.y=450;
+
+    draw_fill_rectangle(haut1,haut2,COUL_BOUTON);
+    draw_fill_rectangle(droite1,droite2,COUL_BOUTON);
+    draw_fill_rectangle(bas1,bas2,COUL_BOUTON);
+    draw_fill_rectangle(gauche1,gauche2,COUL_BOUTON);
 }
 
 
@@ -105,6 +123,7 @@ void afficher_sokoban(ACTION A,TABLEAU T, int stage) {
     fill_screen(noir);
     afficher_jeu(T);
     afficher_les_boutons(A);
+    afficher_bouton_deplacement();
     affichage_secondaire(stage);
     //affiche_all();
 }
@@ -197,7 +216,7 @@ void afficher_jeu(TABLEAU T) {
             if(T.array[n][m]==3)      //3 . objectif
                 //draw_fill_rectangle(hg,bd,jaune);
                 graph_croix(hg,bd);
-            if(T.array[n][m]==4){      //4 @ homme
+            if(T.array[n][m]==4 || T.array[n][m]==6){      //4 ou 6 @ homme
                 draw_fill_rectangle(hg,bd,cyan);  
                 //POINT homme;
                 //printf("x=%d y=%d \n\n",homme.x, homme.y);
