@@ -1,11 +1,12 @@
 // jeu.h du projet Sokoban
 // Dang Thanh Duy   AKA BlackyStaar
 
-#include "constantes.h"
-#include "action.h"
-
 #ifndef __JEU_H
 #define __JEU_H
+
+//#include "uvsqgraphics.h"
+#include "constantes.h"
+#include "action.h"
 
 struct tableau {
 	int taille;
@@ -17,5 +18,7 @@ ACTION resoudre_sokoban(ACTION A);
 
 TABLEAU initTab(TABLEAU tab);
 void afficherTab(TABLEAU tab);
+
+void test();
 
 #endif

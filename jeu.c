@@ -3,9 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <uvsqgraphics.h>
 #include "jeu.h"
 #include "constantes.h"
 #include "action.h"
+
 
 
 TABLEAU initTab(TABLEAU t) {
@@ -61,6 +63,32 @@ void afficherTab2(TABLEAU t){
 }*/
 
 ACTION resoudre_sokoban(ACTION A){
-
 	return A;
 	}
+
+
+POINT recuperer_pos_homme(TABLEAU T){
+	POINT P;
+	int n, m;
+
+	for(n=0;n<T.taille;n++){
+		for(m=0;m<T.taille;m++){
+			if(T.array[n][m]==4){
+				P.x=n; P.y=m;
+				return P;
+			}
+		}
+	}
+
+	P.x=0; P.y=0;
+	return P;
+}
+
+
+void test(TABLEAU T){
+	POINT homme;
+	homme=recuperer_pos_homme(T);
+    printf("x=%d y=%d \n\n",homme.x, homme.y);
+}
+
+

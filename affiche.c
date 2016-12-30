@@ -10,7 +10,7 @@
 #include "action.h"
 
 void initialiser_affichage() {
-    init_graphics(LARGEUR_FENETRE,HAUTEUR_FENETRE);
+    init_graphics(LARGEUR_AFFICHAGE,HAUTEUR_AFFICHAGE);
     //affiche_auto_off();
 }
 
@@ -84,83 +84,80 @@ void afficher_un_bouton(int numero, char *texte, int la_selection) {
 
 void afficher_les_boutons(ACTION A) {
     // Le 3ème argument vaut 0 ou 1 selon que c'est le mode actif ou non
-    afficher_un_bouton(0,"JOUER", A.mode==JOUER);
-    afficher_un_bouton(1,"SELECT",  A.mode==SELECT);
-    afficher_un_bouton(2,"PREC",  A.mode==PREC);
-    afficher_un_bouton(3,"SUIV",  A.mode==SUIV);
-    afficher_un_bouton(4,"QUITTER",A.mode==QUITTER);
+    afficher_un_bouton(0,"QUIT", A.mode==QUIT);
+    afficher_un_bouton(1,"UNDO", A.mode==UNDO);
+    afficher_un_bouton(2,"REDO", A.mode==REDO);
+    afficher_un_bouton(3,"INIT", A.mode==INIT);
+    afficher_un_bouton(4,"PRED", A.mode==PRED);
+    afficher_un_bouton(5,"SUIV", A.mode==SUIV);
+}
+
+
+void affichage_secondaire(int stage){
+    POINT p;
+    p.x=30; p.y=600;
+    aff_pol("stage=",12,p,blanc);
 }
 
 
 
-void afficher_sokoban(ACTION A,TABLEAU T) {
+void afficher_sokoban(ACTION A,TABLEAU T, int stage) {
     fill_screen(noir);
     afficher_jeu(T);
     afficher_les_boutons(A);
+    affichage_secondaire(stage);
     //affiche_all();
 }
 
 
-ACTION modifier_sudoku_action (ACTION A) {
+int modifier_stage(ACTION A, int stage){
+    if (A.mode == PRED){
+        if(stage!=1)
+            stage--;
+    }
+
+    if (A.mode == SUIV){
+        if(stage!=50)
+            stage++; 
+    }
+    return stage;
+}
+
+TABLEAU modifier_sudoku_action (ACTION A, TABLEAU T,int stage) {
  
-    if (A.mode == JOUER) {
-        A = resoudre_sokoban(A);
-        return A; 
+    if (A.mode == QUIT) {
+        
+        return T; 
     }
 
-    if (A.mode == SELECT) {
-        return A; 
+    if (A.mode == UNDO) {
+        return T; 
     }
 
 
-    if (A.mode == PREC) {
-        return A; 
+    if (A.mode == REDO) {
+        return T; 
     }
         
 
-    if (A.mode == SUIV) {
-        return A; 
+    if (A.mode == INIT) {
+        A = resoudre_sokoban(A);
+        return T; 
     }   
     
-    if (A.mode == QUITTER){
-        return A;
+    if (A.mode == PRED){
+        T=selection_stage(stage, T ); 
+        return T;
     }
 
-    return A;
+    if (A.mode == SUIV){
+        T=selection_stage(stage, T ); 
+        return T;
+    }
+    return T;
     
 }
 
-void afficher_jeu(TABLEAU T) {
-    
-    POINT hg, bd;
-    hg.x = 100; hg.y = 500;
-    bd.x = hg.x+TAILLE_CASE_JEU; bd.y = hg.y+TAILLE_CASE_JEU;
-    //draw_fill_rectangle(hg,bd,bleu);
-    //draw_line(hg,bd,bleu);
-    //graph_croix(hg,bd);
-    
-    int n, m;
-
-    for(n=0;n<T.taille;n++) {
-        hg.x = hg.x+TAILLE_CASE_JEU; bd.x = bd.x+TAILLE_CASE_JEU;
-        hg.y = 500; bd.y = 525;
-        for(m=0;m<T.taille;m++){
-            hg.y = hg.y-TAILLE_CASE_JEU; bd.y = bd.y-TAILLE_CASE_JEU;
-
-            if(T.array[n][m]==1)      //1 # mur
-                draw_fill_rectangle(hg,bd,gris);
-            if(T.array[n][m]==2)      //2 $ caisse
-                draw_fill_rectangle(hg,bd,marron);
-            if(T.array[n][m]==3)      //3 . objectif
-                //draw_fill_rectangle(hg,bd,jaune);
-                graph_croix(hg,bd);
-            if(T.array[n][m]==4)      //4 @ homme
-                draw_fill_rectangle(hg,bd,cyan);  
-            
-        }
-    }
-    
-}
 
 
 void graph_croix(POINT haut_gauche,POINT bas_droit) {
@@ -175,4 +172,41 @@ void graph_croix(POINT haut_gauche,POINT bas_droit) {
     draw_line(haut_gauche,bas_droit,COUL_CROIX);
     draw_line(bas_gauche,haut_droit,COUL_CROIX); 
 }
+
+void afficher_jeu(TABLEAU T) {
+    
+    POINT hg, bd;
+    hg.x = 20; hg.y = 400;
+    bd.x = hg.x+TAILLE_CASE_JEU; bd.y = hg.y+TAILLE_CASE_JEU;
+    //draw_fill_rectangle(hg,bd,bleu);
+    //draw_line(hg,bd,bleu);
+    //graph_croix(hg,bd);
+    
+    int n, m;
+
+    for(n=0;n<T.taille;n++) {
+        hg.x = hg.x+TAILLE_CASE_JEU; bd.x = bd.x+TAILLE_CASE_JEU;
+        hg.y = 600; bd.y = 625;
+        for(m=0;m<T.taille;m++){
+            hg.y = hg.y-TAILLE_CASE_JEU; bd.y = bd.y-TAILLE_CASE_JEU;
+
+            if(T.array[n][m]==1)      //1 # mur
+                draw_fill_rectangle(hg,bd,gris);
+            if(T.array[n][m]==2)      //2 $ caisse
+                draw_fill_rectangle(hg,bd,marron);
+            if(T.array[n][m]==3)      //3 . objectif
+                //draw_fill_rectangle(hg,bd,jaune);
+                graph_croix(hg,bd);
+            if(T.array[n][m]==4){      //4 @ homme
+                draw_fill_rectangle(hg,bd,cyan);  
+                //POINT homme;
+                //printf("x=%d y=%d \n\n",homme.x, homme.y);
+            }
+        }
+    }
+    
+}
+
+
+
 

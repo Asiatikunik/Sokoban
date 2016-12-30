@@ -4,20 +4,20 @@
 #ifndef __CONSTANTES_H
 #define __CONSTANTES_H
 
-#define TAILLE_TAB 25
+#define TAILLE_TAB 50
 #define TAILLE_CASE_JEU 25
 
-#define QUITTER   0
-#define JOUER     1
-#define SELECT    2
-#define PREC      3
-#define SUIV      4
-#define GRILLE    5
+#define QUIT   0
+#define UNDO   1
+#define REDO   2
+#define INIT   3
+#define PRED   4
+#define SUIV   5
 
-#define LARGEUR_FENETRE 600
-#define HAUTEUR_FENETRE 600
-#define TAILLE_CASE 40
-#define LARG_BOUTON ((N*TAILLE_CASE)/4.7)
+#define LARGEUR_AFFICHAGE 1000
+#define HAUTEUR_AFFICHAGE 650
+#define TAILLE_CASE 43
+#define LARG_BOUTON ((N*TAILLE_CASE)/5.6)
 #define HAUT_BOUTON (TAILLE_CASE)
 #define LARG_FENETRE (N*TAILLE_CASE)
 #define HAUT_FENETRE (N*TAILLE_CASE + HAUT_BOUTON)

@@ -1,16 +1,16 @@
 # Makefile du projet Sokoban
 # Thanh Duy Dang  AKA BlackyStaar
 
-all: main
-		./main
+all: sokoban
+		./sokoban
 
-main: main.o affiche.o action.o jeu.o
-	gcc -o main main.o affiche.o action.o jeu.o -luvsqgraphics `sdl-config --libs` -lm -lSDL_ttf
+sokoban: sokoban.o affiche.o action.o jeu.o
+	gcc -o sokoban sokoban.o affiche.o action.o jeu.o -luvsqgraphics `sdl-config --libs` -lm -lSDL_ttf
 
-main.o: main.c affiche.h constantes.h
-	gcc -c -g -Wall main.c
+sokoban.o: sokoban.c affiche.h constantes.h
+	gcc -c -g -Wall sokoban.c
 
-affiche.o: affiche.c affiche.h main.h constantes.h
+affiche.o: affiche.c affiche.h sokoban.h constantes.h
 	gcc -c -g -Wall `sdl-config --cflags` affiche.c
 	
 action.o: action.c action.h constantes.h
@@ -21,7 +21,7 @@ jeu.o: jeu.c jeu.h constantes.h
 
 clean:
 	rm -f affiche.o
-	rm -f main.o
-	rm -f main
+	rm -f sokoban.o
+	rm -f sokoban
 	rm -f action.o
 	rm -f jeu.o
