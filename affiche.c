@@ -192,6 +192,21 @@ void graph_croix(POINT haut_gauche,POINT bas_droit) {
     draw_line(bas_gauche,haut_droit,COUL_CROIX); 
 }
 
+void graph_homme(POINT haut_gauche){
+    int rayon=TAILLE_CASE_JEU/2;
+    haut_gauche.x=haut_gauche.x+(TAILLE_CASE_JEU/2);
+    haut_gauche.y=haut_gauche.y+(TAILLE_CASE_JEU/2);
+    draw_fill_circle(haut_gauche,rayon,cyan);
+}
+
+void graph_homme_objectif(POINT haut_gauche,POINT bas_droit){
+    int rayon=TAILLE_CASE_JEU/2;
+    graph_croix(haut_gauche,bas_droit);
+    haut_gauche.x=haut_gauche.x+(TAILLE_CASE_JEU/2);
+    haut_gauche.y=haut_gauche.y+(TAILLE_CASE_JEU/2);
+    draw_fill_circle(haut_gauche,rayon,cyan);
+}
+
 void afficher_jeu(TABLEAU T) {
     
     POINT hg, bd;
@@ -216,10 +231,13 @@ void afficher_jeu(TABLEAU T) {
             if(T.array[n][m]==3)      //3 . objectif
                 //draw_fill_rectangle(hg,bd,jaune);
                 graph_croix(hg,bd);
-            if(T.array[n][m]==4 || T.array[n][m]==6){      //4 ou 6 @ homme
-                draw_fill_rectangle(hg,bd,cyan);  
+            if(T.array[n][m]==4 ){      //4 @ homme
+                graph_homme(hg);  
                 //POINT homme;
                 //printf("x=%d y=%d \n\n",homme.x, homme.y);
+            }
+            if(T.array[n][m]==6){    // ou 6 @ homme avec objectif en dessous
+                graph_homme_objectif(hg,bd); 
             }
         }
     }
