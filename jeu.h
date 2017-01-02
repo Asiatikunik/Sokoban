@@ -1,5 +1,5 @@
 // jeu.h du projet Sokoban
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #ifndef __JEU_H
 #define __JEU_H
@@ -21,6 +21,7 @@ void afficherTab(TABLEAU tab);
 
 //TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
 TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
+int nb_move(ACTION a,int nombre);
 void test();
 
 #endif

@@ -1,5 +1,5 @@
 // affiche.c du projet SOKOBAN
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +21,7 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
     int s, n=0, m=0;
 
     fichier = fopen("sasquatch1.xsb", "r");
+    //fichier = fopen("test.txt", "r");
 
     if(fichier != NULL) {
         for(s=-1; s<stage;s++){
@@ -84,12 +85,12 @@ void afficher_un_bouton(int numero, char *texte, int la_selection) {
 
 void afficher_les_boutons(ACTION A) {
     // Le 3ème argument vaut 0 ou 1 selon que c'est le mode actif ou non
-    afficher_un_bouton(0,"QUIT", A.mode==QUIT);
-    afficher_un_bouton(1,"UNDO", A.mode==UNDO);
-    afficher_un_bouton(2,"REDO", A.mode==REDO);
-    afficher_un_bouton(3,"INIT", A.mode==INIT);
-    afficher_un_bouton(4,"PRED", A.mode==PRED);
-    afficher_un_bouton(5,"SUIV", A.mode==SUIV);   
+    afficher_un_bouton(0,"Quit", A.mode==QUIT);
+    afficher_un_bouton(1,"Undo", A.mode==UNDO);
+    afficher_un_bouton(2,"Redo", A.mode==REDO);
+    afficher_un_bouton(3,"Init", A.mode==INIT);
+    afficher_un_bouton(4,"Pred", A.mode==PRED);
+    afficher_un_bouton(5,"Suiv", A.mode==SUIV);   
 }
 
 void afficher_bouton_deplacement(){
@@ -111,20 +112,45 @@ void afficher_bouton_deplacement(){
 }
 
 
-void affichage_secondaire(int stage){
-    POINT p;
-    p.x=30; p.y=600;
-    aff_pol("stage=",12,p,blanc);
+void affichage_secondaire_stage(int stage){
+    POINT p1, p2;
+    p1.x=30; p1.y=600; p2.x=80; p2.y=600;
+    aff_pol("Stage=",12,p1,blanc);
+    aff_int(stage,12,p2,blanc);
+}
+
+void affichage_secondaire_nb_move(int nb_move){
+    POINT p1, p2;
+    p1.x=100; p1.y=600; p2.x=145; p2.y=600;
+    aff_pol("Move=",12,p1,blanc);
+    aff_int(nb_move,12,p2,blanc);
+}
+
+void traie_en_dessous_lettre(){
+    POINT p1, p2;
+    p1.x=32; p1.y=610; p2.x=48; p2.y=610;
+    draw_line(p1,p2,noir);
+    p1.x=135; p1.y=610; p2.x=148; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=243; p2.y=610; p2.x=258; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=355; p2.y=610; p2.x=367; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=460; p2.y=610; p2.x=472; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=566; p2.y=610; p2.x=580; p2.y=610; 
+    draw_line(p1,p2,noir);
 }
 
 
-
-void afficher_sokoban(ACTION A,TABLEAU T, int stage) {
+void afficher_sokoban(ACTION A,TABLEAU T, int stage, int nb_move) {
     fill_screen(noir);
     afficher_jeu(T);
     afficher_les_boutons(A);
     afficher_bouton_deplacement();
-    affichage_secondaire(stage);
+    affichage_secondaire_stage(stage);
+    traie_en_dessous_lettre();
+    affichage_secondaire_nb_move(nb_move);
     //affiche_all();
 }
 
@@ -180,7 +206,7 @@ TABLEAU modifier_sudoku_action (ACTION A, TABLEAU T,int stage) {
 
 
 void graph_croix(POINT haut_gauche,POINT bas_droit) {
-    POINT haut_droit, bas_gauche;
+    POINT haut_droit, bas_gauche; //Bon, j'ai inversé en haut et en bas mais sa change rien
 
     haut_droit.x = bas_droit.x; //hg.x=g.x+TAILLE_CASE_JEU;
     haut_droit.y = haut_gauche.y;
@@ -190,6 +216,10 @@ void graph_croix(POINT haut_gauche,POINT bas_droit) {
 
     draw_line(haut_gauche,bas_droit,COUL_CROIX);
     draw_line(bas_gauche,haut_droit,COUL_CROIX); 
+    draw_line(haut_gauche,haut_droit,COUL_CROIX);
+    draw_line(bas_gauche,bas_droit,COUL_CROIX);
+    draw_line(haut_gauche,bas_gauche,COUL_CROIX);
+    draw_line(haut_droit,bas_droit,COUL_CROIX);
 }
 
 void graph_homme(POINT haut_gauche){
@@ -224,20 +254,23 @@ void afficher_jeu(TABLEAU T) {
         for(m=0;m<T.taille;m++){
             hg.y = hg.y-TAILLE_CASE_JEU; bd.y = bd.y-TAILLE_CASE_JEU;
 
-            if(T.array[n][m]==1)      //1 # mur
+            if(T.array[n][m]==MUR)      //1 # mur
                 draw_fill_rectangle(hg,bd,gris);
-            if(T.array[n][m]==2)      //2 $ caisse
+            if(T.array[n][m]==CAISSE)      //2 $ caisse
                 draw_fill_rectangle(hg,bd,marron);
-            if(T.array[n][m]==3)      //3 . objectif
+            if(T.array[n][m]==OBJECTIF)      //3 . objectif
                 //draw_fill_rectangle(hg,bd,jaune);
                 graph_croix(hg,bd);
-            if(T.array[n][m]==4 ){      //4 @ homme
+            if(T.array[n][m]==HOMME ){      //4 @ homme
                 graph_homme(hg);  
                 //POINT homme;
                 //printf("x=%d y=%d \n\n",homme.x, homme.y);
             }
-            if(T.array[n][m]==6){    // ou 6 @ homme avec objectif en dessous
+            if(T.array[n][m]==HOMME_OBJECTIF){    // ou 6 homme avec objectif en dessous
                 graph_homme_objectif(hg,bd); 
+            }
+            if(T.array[n][m]==CAISSE_OBJECTIF){    // ou 7 caisse sur objectif
+                draw_fill_rectangle(hg,bd,red); 
             }
         }
     }

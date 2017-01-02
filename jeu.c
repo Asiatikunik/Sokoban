@@ -1,5 +1,5 @@
 // jeu.c du projet SOKOBAN
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,6 @@
 #include "jeu.h"
 #include "constantes.h"
 #include "action.h"
-
 
 
 TABLEAU initTab(TABLEAU t) {
@@ -27,9 +26,9 @@ void afficherTab(TABLEAU t) {
 	int n,m;
 	for(n=0; n<t.taille; n++){
 		for(m=0; m<t.taille; m++) {
-			if(t.array[n][m]!=-1 || t.array[n][m]!=5)
+			if(t.array[n][m]!=-1 || t.array[n][m]!=VIDE)
 				printf("%d ",t.array[n][m]);
-			if(t.array[n][m]==-1 || t.array[n][m]==5)
+			if(t.array[n][m]==-1 || t.array[n][m]==VIDE)
 		    	printf(" ");
 		    else
 				printf("%d ",t.array[n][m]);
@@ -38,33 +37,10 @@ void afficherTab(TABLEAU t) {
 	}
 }
 
-/*
-void afficherTab2(TABLEAU t){
-
-	int n,m;
-	for(n=0; n<t.taille; n++) {
-		for(m=0; m<t.taille; m++) {  
-			if(t.array[n][m]==1)      //1 # mur
-		        printf("#");
-		    if(t.array[n][m]==2)      //2 $ caisse
-		        printf("$");
-		    if(t.array[n][m]==3)      //3 . objectif
-		        printf(".");
-		    if(t.array[n][m]==4)      //4 @ homme
-		        printf("@");
-		    if(t.array[n][m]==-1 || t.array[n][m]==5)
-		    	printf(" ");
-		    else
-				printf("%d ",t.array[n][m]);
-		}
-		printf("\n");
-	}
- 
-}*/
 
 ACTION resoudre_sokoban(ACTION A){
 	return A;
-	}
+}
 
 POINT recup_pos_homme(TABLEAU T){
 	POINT P;
@@ -72,11 +48,11 @@ POINT recup_pos_homme(TABLEAU T){
 
 	for(n=0;n<T.taille;n++){
 		for(m=0;m<T.taille;m++){
-			if(T.array[n][m]==4){ //Il y a une problème 
+			if(T.array[n][m]==HOMME){ //Il y a une problème 
 				P.x=n; P.y=m;		
 				return P;
 			}
-			if(T.array[n][m]==6){ //je ne peux pas d'utilisé de "ou" "||"...
+			if(T.array[n][m]==HOMME_OBJECTIF){ //je ne peux pas d'utilisé de "ou" "||"...
 				P.x=n; P.y=m;
 				return P;
 			}
@@ -87,142 +63,275 @@ POINT recup_pos_homme(TABLEAU T){
 	return P;
 }
 
+int nb_move(ACTION a,int nombre){
+	if(a.mode==GAUCHE || a.mode==DROITE || a.mode==HAUT || a.mode==BAS)
+		nombre++;
+	if(a.mode==SUIV || a.mode==PRED)
+		nombre=0;
+	return nombre;
+}
+
 /*****************************************************************/
 //CONDITION DE DEPLACEMENT
-/*
-TABLEAU move_caisse_gauche(TABLEAU t, POINT p){
 
+TABLEAU move_caisse_gauche(TABLEAU t, POINT homme){
+	if(t.array[homme.x-1][homme.y]==CAISSE && t.array[homme.x-2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x-1][homme.y]=HOMME;
+		t.array[homme.x-2][homme.y]=CAISSE;
+	}
 	return t;
 }
-*/
+TABLEAU move_caisse_droite(TABLEAU t, POINT homme){
+	if(t.array[homme.x+1][homme.y]==CAISSE && t.array[homme.x+2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x+1][homme.y]=HOMME;
+		t.array[homme.x+2][homme.y]=CAISSE;
+	}
+	return t;
+}
+TABLEAU move_caisse_haut(TABLEAU t, POINT homme){
+	if(t.array[homme.x][homme.y-1]==CAISSE && t.array[homme.x][homme.y-2]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y-1]=HOMME;
+		t.array[homme.x][homme.y-2]=CAISSE;
+	}
+	return t;
+}
+TABLEAU move_caisse_bas(TABLEAU t, POINT homme){
+	if(t.array[homme.x][homme.y+1]==CAISSE && t.array[homme.x][homme.y+2]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y+1]=HOMME;
+		t.array[homme.x][homme.y+2]=CAISSE;
+	}
+	return t;
+}
+
+
 
 TABLEAU move_goal_gauche(TABLEAU t, POINT homme){
 	
-	if(t.array[homme.x][homme.y]==6 && t.array[homme.x-1][homme.y]==5){ //Sur objectif et case a cote rien
-		t.array[homme.x][homme.y]=3; t.array[homme.x-1][homme.y]=4;
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x-1][homme.y]==VIDE){ //Sur objectif et case a cote rien
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x-1][homme.y]=HOMME;
 	}
-	if (t.array[homme.x][homme.y]==6 && t.array[homme.x-1][homme.y]==3){ //Sur objectif et case a cote objectif
-		t.array[homme.x][homme.y]=3; t.array[homme.x-1][homme.y]=6;
+	if (t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x-1][homme.y]==OBJECTIF){ //Sur objectif et case a cote objectif
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x-1][homme.y]=HOMME_OBJECTIF;
 	}
-	if(t.array[homme.x][homme.y]==4 && t.array[homme.x-1][homme.y]==3){ //Sur case vide et case a cote objectif
-		t.array[homme.x][homme.y]=5; t.array[homme.x-1][homme.y]=6;
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x-1][homme.y]==OBJECTIF){ //Sur case vide et case a cote objectif
+		t.array[homme.x][homme.y]=VIDE; t.array[homme.x-1][homme.y]=HOMME_OBJECTIF;
 	}
-
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x-1][homme.y]==CAISSE 
+		&& t.array[homme.x-2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x-1][homme.y]=HOMME;
+		t.array[homme.x-2][homme.y]=CAISSE_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x-1][homme.y]==CAISSE_OBJECTIF 
+		&& t.array[homme.x-2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x-1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x-2][homme.y]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x-1][homme.y]==CAISSE_OBJECTIF 
+		&& t.array[homme.x-2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x-1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x-2][homme.y]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x-1][homme.y]==CAISSE_OBJECTIF
+		&& t.array[homme.x-2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x-1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x-2][homme.y]=CAISSE_OBJECTIF;
+	}
 	return t;
 }
 
 TABLEAU move_goal_droite(TABLEAU t, POINT homme){
 	
-	if(t.array[homme.x][homme.y]==6 && t.array[homme.x+1][homme.y]==5){ //Sur objectif et case a cote rien
-		t.array[homme.x][homme.y]=3; t.array[homme.x+1][homme.y]=4;;
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x+1][homme.y]==VIDE){ //Sur objectif et case a cote rien
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x+1][homme.y]=HOMME;;
 	} 
-	if (t.array[homme.x][homme.y]==6 && t.array[homme.x+1][homme.y]==3){ //Sur objectif et case a cote objectif
-		t.array[homme.x][homme.y]=3; t.array[homme.x+1][homme.y]=6;
+	if (t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x+1][homme.y]==OBJECTIF){ //Sur objectif et case a cote objectif
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x+1][homme.y]=HOMME_OBJECTIF;
 	}
-	if(t.array[homme.x][homme.y]==4 && t.array[homme.x+1][homme.y]==3){ //Sur case vide et case a cote objectif
-		t.array[homme.x][homme.y]=5; t.array[homme.x+1][homme.y]=6;
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x+1][homme.y]==OBJECTIF){ //Sur case vide et case a cote objectif
+		t.array[homme.x][homme.y]=VIDE; t.array[homme.x+1][homme.y]=HOMME_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x+1][homme.y]==CAISSE 
+		&& t.array[homme.x+2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x+1][homme.y]=HOMME;
+		t.array[homme.x+2][homme.y]=CAISSE_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x+1][homme.y]==CAISSE_OBJECTIF 
+		&& t.array[homme.x+2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x+1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x+2][homme.y]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x+1][homme.y]==CAISSE_OBJECTIF 
+		&& t.array[homme.x+2][homme.y]==VIDE){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x+1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x+2][homme.y]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x+1][homme.y]==CAISSE_OBJECTIF
+		&& t.array[homme.x+2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x+1][homme.y]=HOMME_OBJECTIF;
+		t.array[homme.x+2][homme.y]=CAISSE_OBJECTIF;
 	}
 	return t;
 }
 
 TABLEAU move_goal_haut(TABLEAU t, POINT homme){
 	
-	if(t.array[homme.x][homme.y]==6 && t.array[homme.x][homme.y-1]==5){ //Sur objectif et case a cote rien
-		t.array[homme.x][homme.y]=3; t.array[homme.x][homme.y-1]=4;;
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y-1]==VIDE){ //Sur objectif et case a cote rien
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x][homme.y-1]=HOMME;;
 	}
-	if (t.array[homme.x][homme.y]==6 && t.array[homme.x][homme.y-1]==3){ //Sur objectif et case a cote objectif
-		t.array[homme.x][homme.y]=3; t.array[homme.x][homme.y-1]=6;
+	if (t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y-1]==OBJECTIF){ //Sur objectif et case a cote objectif
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x][homme.y-1]=HOMME_OBJECTIF;
 	}
-	if(t.array[homme.x][homme.y]==4 && t.array[homme.x][homme.y-1]==3){ //Sur case vide et case a cote objectif
-		t.array[homme.x][homme.y]=5; t.array[homme.x][homme.y-1]=6;
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y-1]==OBJECTIF){ //Sur case vide et case a cote objectif
+		t.array[homme.x][homme.y]=VIDE; t.array[homme.x][homme.y-1]=HOMME_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y-1]==CAISSE 
+		&& t.array[homme.x][homme.y-2]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y-1]=HOMME;
+		t.array[homme.x][homme.y-2]=CAISSE_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y-1]==CAISSE_OBJECTIF 
+		&& t.array[homme.x][homme.y-2]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y-1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y-2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y-1]==CAISSE_OBJECTIF 
+		&& t.array[homme.x][homme.y-2]==VIDE){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x][homme.y-1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y-2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y-1]==CAISSE_OBJECTIF
+		&& t.array[homme.x][homme.y-2]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y-1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y-2]=CAISSE_OBJECTIF;
 	}
 	return t;
 }
 
 TABLEAU move_goal_bas(TABLEAU t, POINT homme){
 	
-	if(t.array[homme.x][homme.y]==6 && t.array[homme.x][homme.y+1]==5){ //Sur objectif et case a cote rien
-		t.array[homme.x][homme.y]=3; t.array[homme.x][homme.y+1]=4;;
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y+1]==VIDE){ //Sur objectif et case a cote rien
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x][homme.y+1]=HOMME;;
 	}
 	
-	if (t.array[homme.x][homme.y]==6 && t.array[homme.x][homme.y+1]==3){ //Sur objectif et case a cote objectif
-		t.array[homme.x][homme.y]=3; t.array[homme.x][homme.y+1]=6;
+	if (t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y+1]==OBJECTIF){ //Sur objectif et case a cote objectif
+		t.array[homme.x][homme.y]=OBJECTIF; t.array[homme.x][homme.y+1]=HOMME_OBJECTIF;
 	}
-	if(t.array[homme.x][homme.y]==4 && t.array[homme.x][homme.y-1]==3){ //Sur case vide et case a cote objectif
-		t.array[homme.x][homme.y]=5; t.array[homme.x][homme.y+1]=6;
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y+1]==OBJECTIF){ //Sur case vide et case a cote objectif
+		t.array[homme.x][homme.y]=VIDE; t.array[homme.x][homme.y+1]=HOMME_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y+1]==CAISSE 
+		&& t.array[homme.x][homme.y+2]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y+1]=HOMME;
+		t.array[homme.x][homme.y+2]=CAISSE_OBJECTIF;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y+1]==CAISSE_OBJECTIF 
+		&& t.array[homme.x][homme.y+2]==VIDE){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y+1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y+2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y+1]==CAISSE_OBJECTIF 
+		&& t.array[homme.x][homme.y+2]==VIDE){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x][homme.y+1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y+2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y+1]==CAISSE_OBJECTIF
+		&& t.array[homme.x][homme.y+2]==OBJECTIF){
+		t.array[homme.x][homme.y]=VIDE;
+		t.array[homme.x][homme.y+1]=HOMME_OBJECTIF;
+		t.array[homme.x][homme.y+2]=CAISSE_OBJECTIF;
 	}
 	return t;
 }
 
 BOOL mouvement_valide_mur_gauche(TABLEAU t, POINT homme){
-	if(t.array[homme.x-1][homme.y]!=1)
+	if(t.array[homme.x-1][homme.y]!=MUR)
 		return 0;
 	return 1;
 }
 BOOL mouvement_valide_mur_droite(TABLEAU t, POINT homme){
-	if(t.array[homme.x+1][homme.y]!=1)
+	if(t.array[homme.x+1][homme.y]!=MUR)
 		return 0;
 	return 1;
 }
 BOOL mouvement_valide_mur_haut(TABLEAU t, POINT homme){
-	if(t.array[homme.x][homme.y-1]!=1)
+	if(t.array[homme.x][homme.y-1]!=MUR)
 		return 0;
 	return 1;
 }
 BOOL mouvement_valide_mur_bas(TABLEAU t, POINT homme){
-	if(t.array[homme.x][homme.y+1]!=1)
+	if(t.array[homme.x][homme.y+1]!=MUR)
 		return 0;	
 	return 1;
 }
 
-TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a){ //Si 6 alors bonhomme avec objectif dessous
+TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a){ //Si HOMME_OBJECTIF alors bonhomme avec objectif dessous
 	POINT homme=recup_pos_homme(t);
 	if(a.mode==GAUCHE){
 		if(mouvement_valide_mur_gauche(t,homme)==0){
-			if(t.array[homme.x][homme.y]==4 && t.array[homme.x-1][homme.y]==5){  //mouvement normal
-				t.array[homme.x][homme.y]=5; //cela ne sert a rien de separer en petit fonction
-				t.array[homme.x-1][homme.y]=4;  //sa rajoutera des lignes pour rien	
-			}else							
+			if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x-1][homme.y]==VIDE){  //mouvement normal
+				t.array[homme.x][homme.y]=VIDE; //cela ne sert a rien de separer en petit fonction
+				t.array[homme.x-1][homme.y]=HOMME;  //sa rajoutera des lignes pour rien	
+			}else{							
 				t=move_goal_gauche(t,homme);	
+				t=move_caisse_gauche(t, homme);
+			}
 		}
 	}
 	if(a.mode==DROITE){
 		if(mouvement_valide_mur_droite(t,homme)==0){
-			if(t.array[homme.x][homme.y]==4 && t.array[homme.x+1][homme.y]==5){
-				t.array[homme.x][homme.y]=5;
-				t.array[homme.x+1][homme.y]=4;
-			}else
-				t=move_goal_droite(t,homme);	
+			if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x+1][homme.y]==VIDE){
+				t.array[homme.x][homme.y]=VIDE;
+				t.array[homme.x+1][homme.y]=HOMME;
+			}else{
+				t=move_goal_droite(t,homme);
+				t=move_caisse_droite(t, homme);	
+			}
 		}
 	}
 	if(a.mode==HAUT){
 		if(mouvement_valide_mur_haut(t,homme)==0){
-			if(t.array[homme.x][homme.y]==4 && t.array[homme.x][homme.y-1]==5){
-				t.array[homme.x][homme.y]=5;
-				t.array[homme.x][homme.y-1]=4;
-			}else
+			if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y-1]==VIDE){
+				t.array[homme.x][homme.y]=VIDE;
+				t.array[homme.x][homme.y-1]=HOMME;
+			}else{
 				t=move_goal_haut(t,homme);
+				t=move_caisse_haut(t, homme);
+			}
 		}
 	}
 	if(a.mode==BAS){
 		if(mouvement_valide_mur_bas(t,homme)==0){
-			if(t.array[homme.x][homme.y]==4 && t.array[homme.x][homme.y+1]==5){
-				t.array[homme.x][homme.y]=5;
-				t.array[homme.x][homme.y+1]=4;
-			}else
+			if(t.array[homme.x][homme.y]==HOMME && t.array[homme.x][homme.y+1]==VIDE){
+				t.array[homme.x][homme.y]=VIDE;
+				t.array[homme.x][homme.y+1]=HOMME;
+			}else{
 				t=move_goal_bas(t,homme);
+				t=move_caisse_bas(t, homme);
+			}
 		}
 	}
 
 	return t;
 }
 
-
-// 1 mur
-// 2 caisse
-// 3 objectif
-// 4 homme
-// 5 vide
-// 6 homme sur objectif
 
 

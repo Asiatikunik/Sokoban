@@ -1,5 +1,5 @@
 // constantes.h du projet SOKOBAN
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #ifndef __CONSTANTES_H
 #define __CONSTANTES_H
@@ -18,6 +18,14 @@
 #define HAUT   8
 #define BAS    9
 #define RIEN   10
+
+#define MUR 1
+#define CAISSE 2
+#define OBJECTIF 3
+#define HOMME 4
+#define VIDE 5
+#define HOMME_OBJECTIF 6
+#define CAISSE_OBJECTIF 7
 
 #define LARGEUR_AFFICHAGE 1005
 #define HAUTEUR_AFFICHAGE 650

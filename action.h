@@ -1,5 +1,5 @@
 // action.h du projet SOKOBAN
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #ifndef ___ACTIONS_H
 #define ___ACTIONS_H
@@ -19,5 +19,8 @@ typedef struct action ACTION;
 
 ACTION recuperer_action();
 int mode_action(ACTION A);
+
+void test_arrow();
+
 
 #endif

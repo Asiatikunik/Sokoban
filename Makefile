@@ -1,5 +1,5 @@
 # Makefile du projet Sokoban
-# Thanh Duy Dang  AKA BlackyStaar
+# Dang Thanh Duy 21607229  AKA BlackyStaar
 
 all: sokoban
 		./sokoban

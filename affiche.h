@@ -1,5 +1,5 @@
 // affiche.h du projet SOKOBAN
-// Dang Thanh Duy   AKA BlackyStaar
+// Dang Thanh Duy 21607229  AKA BlackyStaar
 
 #ifndef __AFFICHE_H
 #define __AFFICHE_H
@@ -17,7 +17,7 @@ TABLEAU modifier_sudoku_action (ACTION A, TABLEAU T,int stage);
 int modifier_stage(ACTION A, int stage);
 
 
-void afficher_sokoban(ACTION A,TABLEAU T,int stage);
+void afficher_sokoban(ACTION A,TABLEAU T,int stage, int nb_move);
 void afficher_jeu(TABLEAU T);
 
 
