@@ -8,6 +8,18 @@
 #include "constantes.h"
 #include "action.h"
 
+SOKOBAN init_sokoban(){
+	SOKOBAN s;
+	s.stage=1;
+	initTab(t);
+
+	return s;
+}
+
+SOKOBAN select_stage_sokoban(SOKOBAN s,int stage){
+	s.stage=stage;
+	return s;
+}
 
 TABLEAU initTab(TABLEAU t) {
 	int n,m;
@@ -70,6 +82,68 @@ int nb_move(ACTION a,int nombre){
 		nombre=0;
 	return nombre;
 }
+/*****************************************************************/
+//LISTE
+
+llist ajouter_debut(llist liste, TABLEAU tab){
+	element* nouvelElement= malloc(sizeof(element));
+	nouvelElement->azerty=tab;
+	nouvelElement->nxt=liste;
+	return nouvelElement;
+}
+
+llist ajouter_fin(llist liste, TABLEAU tab){
+	element* nouvelElement= malloc(sizeof(element));
+	nouvelElement->azerty=tab;
+	nouvelElement->nxt=NULL;
+
+	if(liste==NULL){
+		return nouvelElement;
+	}else{
+		element* temp=liste;
+		while(temp->nxt !=NULL){
+			temp=temp->nxt;
+		}
+		temp->nxt=nouvelElement;
+	}
+	return liste;
+}
+
+
+llist supprimerElement_debut(llist liste){
+	if(liste != NULL){
+		element* aRenvoyer = liste->nxt;
+		free(liste);
+		return aRenvoyer;
+	}else{
+		return NULL;
+	}
+}
+
+llist supprimerElement_Fin(llist liste){
+
+    if(liste == NULL)
+		return NULL;
+
+    if(liste->nxt == NULL){
+        free(liste);
+        return NULL;
+    }
+
+    element* tmp = liste;
+    element* ptmp = liste;
+
+    while(tmp->nxt != NULL){
+        ptmp = tmp;
+        tmp = tmp->nxt;
+    }
+
+    ptmp->nxt = NULL;
+    free(tmp);
+   	return liste;
+}
+
+
 
 /*****************************************************************/
 //CONDITION DE DEPLACEMENT

@@ -1,7 +1,7 @@
 # Makefile du projet Sokoban
 # Dang Thanh Duy 21607229  AKA BlackyStaar
 
-all: sokoban
+all: $(sokoban)
 		./sokoban
 
 sokoban: sokoban.o affiche.o action.o jeu.o
@@ -25,3 +25,4 @@ clean:
 	rm -f sokoban
 	rm -f action.o
 	rm -f jeu.o
+

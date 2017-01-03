@@ -8,11 +8,27 @@
 #include "constantes.h"
 #include "action.h"
 
+typedef struct sokoban SOKOBAN;
+struct sokoban{
+	TABLEAU t;
+	int stage;
+};
+
+typedef struct tableau TABLEAU;
 struct tableau {
 	int taille;
 	int array[100][100];
 }; 
-typedef struct tableau TABLEAU;
+
+typedef struct element element;
+struct element{
+	TABLEAU azerty;
+	int actuel;
+	struct element *nxt;
+
+};
+typedef element* llist;
+
 
 ACTION resoudre_sokoban(ACTION A);
 
@@ -22,6 +38,9 @@ void afficherTab(TABLEAU tab);
 //TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
 TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
 int nb_move(ACTION a,int nombre);
-void test();
+//void test();
+
+void init_sokoban();
+SOKOBAN select_stage_sokoban(SOKOBAN s,int stage);
 
 #endif

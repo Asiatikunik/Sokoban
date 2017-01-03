@@ -10,22 +10,19 @@
 
 
 
-int main(){
+int main(int argc, char *argv[]){
     
-
-
-    //system("clear");
 	TABLEAU t;
+    //SOKOBAN s;
 	ACTION a;
 	int stage=1;
     int move=0;
 
-	//a.mode=INIT;
-
+    //s=init_sokoban();
 	t=initTab(t);
-	//afficherTab(t);
+	
 	t=selection_stage(stage, t);
-	//afficherTab(t);
+
 
     initialiser_affichage();
     afficher_sokoban(a,t,stage,move); 
