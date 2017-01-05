@@ -8,19 +8,6 @@
 #include "constantes.h"
 #include "action.h"
 
-SOKOBAN init_sokoban(){
-	SOKOBAN s;
-	s.stage=1;
-	initTab(t);
-
-	return s;
-}
-
-SOKOBAN select_stage_sokoban(SOKOBAN s,int stage){
-	s.stage=stage;
-	return s;
-}
-
 TABLEAU initTab(TABLEAU t) {
 	int n,m;
 	t.taille=TAILLE_TAB;
@@ -82,6 +69,48 @@ int nb_move(ACTION a,int nombre){
 		nombre=0;
 	return nombre;
 }
+
+/******************************************************************/
+//Utilisation des fonctions de liste
+
+llist ajouter_deplacement_liste(ACTION a, llist ma_liste1, TABLEAU t){
+	if(a.mode==GAUCHE || a.mode==DROITE || a.mode==HAUT || a.mode==BAS || a.mode==INIT)
+		ma_liste1=ajouter_debut(ma_liste1,t);
+	return ma_liste1;
+}
+
+/*
+TABLEAU undo(TABLEAU t, llist ma_liste1, llist ma_liste2, int move){
+	if(move != 0){
+		ma_liste2=ajouter_debut(ma_liste2,t);
+		ma_liste1=supprimerElement_debut(ma_liste1);
+		//move--;
+		return ma_liste1->azerty;
+	}
+	
+	if(move == 0){
+		return t;
+	}
+	return t;
+}
+*/
+
+/*
+TABLEAU undo(TABLEAU t, llist ma_liste1, llist ma_liste2, int move){
+	if(move != 0){
+		ma_liste2=ajouter_debut(ma_liste2,t);
+		//ma_liste1=supprimerElement_debut(ma_liste1);
+		return supprimerElement_debut(ma_liste1);
+	}
+	if(move == 0){
+		return t;
+	}
+	return t;
+}
+*/
+
+
+
 /*****************************************************************/
 //LISTE
 
@@ -120,6 +149,7 @@ llist supprimerElement_debut(llist liste){
 	}
 }
 
+
 llist supprimerElement_Fin(llist liste){
 
     if(liste == NULL)
@@ -143,7 +173,13 @@ llist supprimerElement_Fin(llist liste){
    	return liste;
 }
 
-
+/*
+void supprimer_liste(llist liste){
+	while(liste!=NULL){
+		liste=supprimerElement_debut(liste);
+	}
+}
+*/
 
 /*****************************************************************/
 //CONDITION DE DEPLACEMENT
