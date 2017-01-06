@@ -4,8 +4,10 @@
 #ifndef __CONSTANTES_H
 #define __CONSTANTES_H
 
-#define TAILLE_TAB 50
+#define TAILLE_TAB 35
 #define TAILLE_CASE_JEU 25
+#define NB_CASE_ABSCISSE 18
+#define NB_CASE_ORDONNE 30
 
 #define QUIT   0
 #define UNDO   1
@@ -18,6 +20,13 @@
 #define HAUT   8
 #define BAS    9
 #define RIEN   10
+#define CREA   11
+#define SAVE   12
+
+#define ACTION_MUR      13
+#define ACTION_HOMME    14
+#define ACTION_CAISSE   15
+#define ACTION_OBJECTIF 16
 
 #define MUR 1
 #define CAISSE 2

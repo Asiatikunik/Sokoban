@@ -29,6 +29,10 @@ TABLEAU initTab(TABLEAU tab);
 void afficherTab(TABLEAU tab);
 TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
 int nb_move(ACTION a,int nombre);
+int modifier_stage(ACTION A, int stage);
+
+//Mode création
+TABLEAU ajout_tableau_creation(ACTION a, TABLEAU t);
 
 //utilisation
 llist ajouter_deplacement_liste(ACTION a, llist ma_liste1, TABLEAU t);
@@ -39,7 +43,7 @@ llist ajouter_debut(llist liste, TABLEAU tab);
 llist ajouter_fin(llist liste, TABLEAU tab);
 llist supprimerElement_debut(llist liste);
 llist supprimerElement_Fin(llist liste);
-//void supprimer_liste(llist liste);
+llist supprimer_liste(llist liste);
 
 
 #endif

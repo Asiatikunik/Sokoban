@@ -70,6 +70,35 @@ int nb_move(ACTION a,int nombre){
 	return nombre;
 }
 
+int modifier_stage(ACTION A, int stage){
+    if (A.mode == PRED){
+        if(stage!=1)
+            stage--;
+    }
+
+    if (A.mode == SUIV){
+        if(stage!=50)
+            stage++; 
+    }
+    return stage;
+}
+/******************************************************************/
+//Mode création
+
+TABLEAU ajout_tableau_creation(ACTION a, TABLEAU t){
+	int n, m;
+	POINT haut_gauche;
+	haut_gauche.x=50; haut_gauche.y=550;
+	if(a.mode==ACTION_MUR){
+		n=a.x/TAILLE_CASE_JEU;
+		m=a.y/TAILLE_CASE_JEU;
+		t.array[n][m]=MUR;
+	}
+
+	return t;
+}
+
+
 /******************************************************************/
 //Utilisation des fonctions de liste
 
@@ -173,13 +202,14 @@ llist supprimerElement_Fin(llist liste){
    	return liste;
 }
 
-/*
-void supprimer_liste(llist liste){
+
+llist supprimer_liste(llist liste){
 	while(liste!=NULL){
 		liste=supprimerElement_debut(liste);
 	}
+	return liste;
 }
-*/
+
 
 /*****************************************************************/
 //CONDITION DE DEPLACEMENT

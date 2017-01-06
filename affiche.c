@@ -90,7 +90,18 @@ void afficher_les_boutons(ACTION A) {
     afficher_un_bouton(2,"Redo", A.mode==REDO);
     afficher_un_bouton(3,"Init", A.mode==INIT);
     afficher_un_bouton(4,"Pred", A.mode==PRED);
-    afficher_un_bouton(5,"Suiv", A.mode==SUIV);   
+    afficher_un_bouton(5,"Suiv", A.mode==SUIV);
+    afficher_un_bouton(6,"Crea", A.mode==CREA);   
+}
+
+void afficher_les_boutons_mode_creation(ACTION A) {
+    // Le 3ème argument vaut 0 ou 1 selon que c'est le mode actif ou non
+    afficher_un_bouton(0,"Quit", A.mode==QUIT);
+    afficher_un_bouton(4,"Save", A.mode==SAVE);
+    afficher_un_bouton(5,"Init", A.mode==INIT);
+    afficher_bouton_deplacement();
+    affichage_secondaire_mode_creation();
+    //afficher_un_bouton(6,"Crea", A.mode==CREA);   
 }
 
 void afficher_bouton_deplacement(){
@@ -111,6 +122,24 @@ void afficher_bouton_deplacement(){
     draw_fill_rectangle(gauche1,gauche2,COUL_BOUTON);
 }
 
+void affichage_secondaire_mode_creation(){
+    POINT p1,p_caisse, p_mur, p_objectif, p_homme;
+
+    p1.x=11; p1.y=615;
+    aff_pol("mode_creation",10,p1,noir);
+
+    p_mur.x=906; p_mur.y=539;
+    aff_pol("Mur",20,p_mur,bleumarine);
+
+    p_caisse.x=850; p_caisse.y=490;
+    aff_pol("Caisse",16,p_caisse,bleumarine);
+
+    p_objectif.x=900; p_objectif.y=435;
+    aff_pol("Objectif",13,p_objectif,bleumarine);
+
+    p_homme.x=950; p_homme.y=485;
+    aff_pol("Homme",14,p_homme,bleumarine);
+}
 
 void affichage_secondaire_stage(int stage){
     POINT p1, p2;
@@ -151,59 +180,100 @@ void afficher_sokoban(ACTION A,TABLEAU T, int stage, int nb_move) {
     affichage_secondaire_stage(stage);
     traie_en_dessous_lettre();
     affichage_secondaire_nb_move(nb_move);
+    cadre_du_jeu();
+    //quadrillage();
     //affiche_all();
 }
 
-
-int modifier_stage(ACTION A, int stage){
-    if (A.mode == PRED){
-        if(stage!=1)
-            stage--;
-    }
-
-    if (A.mode == SUIV){
-        if(stage!=50)
-            stage++; 
-    }
-    return stage;
+void afficher_mode_creation(ACTION A, TABLEAU T){
+    fill_screen(noir);
+    afficher_les_boutons_mode_creation(A);
+    quadrillage();
 }
 
-TABLEAU modifier_sudoku_action (ACTION A, TABLEAU T,int stage) {
+TABLEAU modifier_sudoku_action (ACTION A, TABLEAU t,int stage) {
  
-    if (A.mode == QUIT) {
-        
-        return T; 
-    }
+    if (A.mode == QUIT) 
+        return t; 
 
-    if (A.mode == UNDO) {
-        return T; 
-    }
+    if (A.mode == UNDO) 
+        return t; 
 
-
-    if (A.mode == REDO) {
-        return T; 
-    }
+    if (A.mode == REDO) 
+        return t; 
         
 
     if (A.mode == INIT) {
         A = resoudre_sokoban(A);
-        return T; 
+        return t; 
     }   
     
     if (A.mode == PRED){
-        T=selection_stage(stage, T ); 
-        return T;
+        t=selection_stage(stage, t ); 
+        return t;
     }
 
     if (A.mode == SUIV){
-        T=selection_stage(stage, T ); 
-        return T;
+        t=selection_stage(stage, t ); 
+        return t;
     }
-    return T;
-    
+    return t;
+  
 }
 
 
+/************************************************************************/
+//Limite du tableau sur l'interface graphique
+
+void cadre_du_jeu(){
+    POINT haut_gauche, haut_droit, bas_droit, bas_gauche;
+    haut_gauche.x=45; 
+    haut_gauche.y=550;
+
+    bas_gauche.x=haut_gauche.x; 
+    bas_gauche.y=haut_gauche.y-(TAILLE_CASE_JEU*NB_CASE_ABSCISSE);
+
+    haut_droit.x=haut_gauche.x+(TAILLE_CASE_JEU*NB_CASE_ORDONNE); 
+    haut_droit.y=haut_gauche.y;
+
+    bas_droit.x=haut_droit.x; 
+    bas_droit.y=bas_gauche.y;
+
+    draw_line(haut_gauche,bas_gauche,blanc);
+    draw_line(haut_gauche,haut_droit,blanc);
+    draw_line(haut_droit,bas_droit,blanc);
+    draw_line(bas_gauche,bas_droit,blanc);
+}
+
+void quadrillage(){
+    int n,m; POINT haut_gauche,haut_droit, bas_gauche;  //Je n'ai pas mis haut_gauche etc.. en constante
+    haut_gauche.x=45;                               //car je dois les modifiers dans mon programme
+    haut_gauche.y=550;
+
+    bas_gauche.x=haut_gauche.x; 
+    bas_gauche.y=haut_gauche.y-(TAILLE_CASE_JEU*NB_CASE_ABSCISSE);
+
+    haut_droit.x=haut_gauche.x+(TAILLE_CASE_JEU*NB_CASE_ORDONNE); 
+    haut_droit.y=haut_gauche.y;
+
+    for(n=0;n<NB_CASE_ABSCISSE+1;n++){
+        draw_line(haut_gauche,haut_droit,blanc);
+        haut_gauche.y-=TAILLE_CASE_JEU; haut_droit.y-=TAILLE_CASE_JEU;
+    }
+
+    haut_gauche.x=45; 
+    haut_gauche.y=550;
+    bas_gauche.x=haut_gauche.x; 
+    bas_gauche.y=haut_gauche.y-(TAILLE_CASE_JEU*NB_CASE_ABSCISSE);
+
+    for (m = 0; m < NB_CASE_ORDONNE+1; m++){
+        draw_line(haut_gauche,bas_gauche,blanc);
+        haut_gauche.x+=TAILLE_CASE_JEU; bas_gauche.x+=TAILLE_CASE_JEU;   
+    }
+}
+
+/***************************************************************************/
+//Affichage du tableau sur l'interface graphique
 
 void graph_croix(POINT haut_gauche,POINT bas_droit) {
     POINT haut_droit, bas_gauche; //Bon, j'ai inversé en haut et en bas mais sa change rien

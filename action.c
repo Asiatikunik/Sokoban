@@ -58,8 +58,8 @@ ACTION recuperer_action() {
 	P.x=0; P.y=0;
 
 	do{	
-		P=wait_key_or_clic(&c);
-		//P=wait_clic();
+		//P=wait_key_or_clic(&c);
+		P=wait_clic();
 		if ((P.x < 1*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='q') { A.mode = QUIT; return A; }
 		else if ((P.x < 2*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='u') { A.mode = UNDO; return A; }
 		else if ((P.x < 3*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='r') { A.mode = REDO; return A; }
@@ -70,6 +70,7 @@ ACTION recuperer_action() {
 		else if ((950<P.x && P.x<1000 && 450<P.y && P.y<500) || P.x==1) { A.mode = DROITE; return A; }
 		else if ((900<P.x && P.x<950 && 500<P.y && P.y<550) || P.y==1) { A.mode = HAUT; return A; }
 		else if ((900<P.x && P.x<950 && 400<P.y && P.y<450) || P.y==-1) { A.mode = BAS; return A; }
+		else if ((P.x < 7*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='c') { A.mode = CREA; return A; }
 		else {A.mode = RIEN; }
 
 	}while(1);
@@ -79,5 +80,55 @@ ACTION recuperer_action() {
 
 int mode_action(ACTION A) {
 	return A.mode;
-}   
+} 
+
+ACTION recuperer_action_mode_creation() {
+	ACTION A; POINT P; char c;
+	P.x=0; P.y=0;
+
+	do{	
+		//P=wait_key_or_clic(&c);
+		P=wait_clic();
+		A.x=P.x;
+		A.y=P.y;
+		if ((P.x < 1*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='q') { A.mode = QUIT; return A; }
+		else if ((P.x < 4*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='i') { A.mode = INIT; return A; }
+		else if ((P.x < 5*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='p') { A.mode = PRED; return A; } 
+		else if ((P.x < 6*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='s') { A.mode = SUIV; return A; } 
+		else if ((850<P.x && P.x<900 && 450<P.y && P.y<500) || P.x==-1) { A.mode = ACTION_CAISSE; return A; } 
+		else if ((950<P.x && P.x<1000 && 450<P.y && P.y<500) || P.x==1) { A.mode = ACTION_HOMME; return A; }
+		else if ((900<P.x && P.x<950 && 500<P.y && P.y<550) || P.y==1) { A.mode = ACTION_MUR; return A; }
+		else if ((900<P.x && P.x<950 && 400<P.y && P.y<450) || P.y==-1) { A.mode = ACTION_OBJECTIF; return A; }
+		else if ((P.x < 7*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='c') { A.mode = CREA; return A; }
+		else {
+			ACTION temp; temp= garder_memoire_derniere_action(A);
+			A.mode = temp.mode; 
+			return A;
+		}
+
+	}while(1);
+
+	return A;
+}  
+
+ACTION garder_memoire_derniere_action(ACTION a){
+	if(a.mode==ACTION_CAISSE){
+		a.mode=ACTION_CAISSE;
+		return a;
+	}
+	if(a.mode==ACTION_MUR){
+		a.mode=ACTION_MUR;
+		return a;
+	}
+	if(a.mode==ACTION_HOMME){
+		a.mode=ACTION_HOMME;
+		return a;
+	}
+	if(a.mode==ACTION_OBJECTIF){
+		a.mode=ACTION_OBJECTIF;
+		return a;
+	}
+
+	return a;
+}
 
