@@ -18,9 +18,8 @@ struct action {
 typedef struct action ACTION;
 
 ACTION recuperer_action();
-ACTION recuperer_action_mode_creation();
+ACTION recuperer_action_mode_creation(ACTION a);
 int mode_action(ACTION A);
-ACTION garder_memoire_derniere_action(ACTION a);
 
 void test_arrow();
 

@@ -26,13 +26,17 @@ typedef element* llist;
 
 ACTION resoudre_sokoban(ACTION A);
 TABLEAU initTab(TABLEAU tab);
+TABLEAU initTab_MUR(TABLEAU t);
 void afficherTab(TABLEAU tab);
 TABLEAU apres_clic_mouvement(TABLEAU t, ACTION a);
 int nb_move(ACTION a,int nombre);
 int modifier_stage(ACTION A, int stage);
+int victoire(TABLEAU t);
 
 //Mode création
 TABLEAU ajout_tableau_creation(ACTION a, TABLEAU t);
+TABLEAU retournee_tableau(TABLEAU t1);
+void sauvegarde(TABLEAU t);
 
 //utilisation
 llist ajouter_deplacement_liste(ACTION a, llist ma_liste1, TABLEAU t);

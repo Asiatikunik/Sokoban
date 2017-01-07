@@ -21,9 +21,13 @@ void afficher_sokoban(ACTION A,TABLEAU T,int stage, int nb_move);
 void afficher_jeu(TABLEAU T);
 void cadre_du_jeu();
 
-void affichage_secondaire_mode_creation();
+void affichage_secondaire_mode_creation(ACTION a);
 void afficher_les_boutons_mode_creation(ACTION A);
 void quadrillage();
 void afficher_mode_creation(ACTION A, TABLEAU T);
+void afficher_bouton_deplacement();
+void trait_en_dessous_lettre();
+void trait_en_dessous_lettre_mode_creation();
+void afficher_victoire();
 
 #endif

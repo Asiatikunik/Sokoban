@@ -11,18 +11,52 @@
 void mode_creation(){
     ACTION a;
     TABLEAU t;
-    //ACTION derniere_action;
-        t=initTab(t);
-        afficher_mode_creation(a, t);
-        afficher_les_boutons_mode_creation(a);
+    llist ma_liste1=NULL;
+    llist ma_liste2=NULL;
+        
+    a.mode=100;
+    t=initTab(t);
+    //t=initTab_MUR(t);
+    afficher_mode_creation(a, t);
     do{
+        a = recuperer_action_mode_creation(a);
         printf("MODEEEEEEEEEEEEEEE %d \n",a.mode);
-        a = recuperer_action_mode_creation();
-        printf("MODEEEEEEEEEEEEEEE %d \n",a.mode);
+        ma_liste1=ajouter_debut(ma_liste1,t);
+
+        if(a.mode == UNDO){
+            if(ma_liste1!=NULL){
+                ma_liste2=ajouter_debut(ma_liste2, t);
+                t=ma_liste1->azerty;
+                //ma_liste1=ma_liste1->nxt;
+                element* temp = ma_liste1->nxt;
+                free(ma_liste1);
+                ma_liste1=temp;
+                printf("SALUT\n");
+            }    
+        }
+
+        if(a.mode == REDO){
+            if(ma_liste2!=NULL){
+                ma_liste1=ajouter_debut(ma_liste1, t);
+                t=ma_liste2->azerty;
+                //ma_liste2=ma_liste2->nxt;
+                element* temp = ma_liste2->nxt;
+                free(ma_liste2);
+                ma_liste2=temp;
+            }
+        }
+        if(a.mode==INIT){
+            t=initTab(t);
+            a.mode=ACTION_MUR;
+        }
+        if(a.mode==SAVE){
+            printf("YOLO\n");
+            sauvegarde(t);
+            printf("azn situation\n");
+        }
+        afficher_mode_creation(a, t);
         t=ajout_tableau_creation(a, t);
         afficher_jeu(t);
-        afficher_mode_creation(a, t);
-        afficher_les_boutons_mode_creation(a);
         //afficherTab(t);
     }while(mode_action(a)!=QUIT);
 
@@ -39,7 +73,6 @@ void mode_jeu(){
     int stage=1;
     t=initTab(t);
     t=selection_stage(stage, t);
-
     initialiser_affichage();
     afficher_sokoban(a,t,stage,t.move); 
     
@@ -94,6 +127,9 @@ void mode_jeu(){
         t.move=nb_move(a,t.move);
         afficher_sokoban(a,t,stage,t.move);
         //printf("move= %d\n", ma_liste1->move);
+        if(victoire(t)==1){
+            afficher_victoire();
+        }
 
     }while(mode_action(a)!=QUIT);
     

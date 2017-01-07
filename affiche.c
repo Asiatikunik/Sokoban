@@ -20,8 +20,8 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
     char caractereActuel = 0;
     int s, n=0, m=0;
 
-    fichier = fopen("sasquatch1.xsb", "r");
-    //fichier = fopen("test.txt", "r");
+    //fichier = fopen("sasquatch1.xsb", "r");
+    fichier = fopen("test.txt", "r");
 
     if(fichier != NULL) {
         for(s=-1; s<stage;s++){
@@ -69,7 +69,7 @@ int tableau_chiffe(int caractere){
 // A MODIFIER, POUR LES COULEURS DES BOUTONS
 void afficher_un_bouton(int numero, char *texte, int la_selection) {
     // rouge si c'est le bouton actif et noir sinon
-    COULEUR coul_texte = la_selection*rouge + (1 - la_selection)*noir;
+    //COULEUR coul_texte = la_selection*rouge + (1 - la_selection)*noir;
 
     POINT bg, hd, centre;
     bg.x = numero*LARG_BOUTON; bg.y = HAUT_FENETRE-HAUT_BOUTON;
@@ -78,7 +78,8 @@ void afficher_un_bouton(int numero, char *texte, int la_selection) {
 
     draw_fill_rectangle(bg,hd,COUL_FOND);
     draw_rectangle(bg,hd,COUL_BORD);
-    aff_pol_centre(texte,TAILLE_POLICE,centre,coul_texte);
+    //aff_pol_centre(texte,TAILLE_POLICE,centre,coul_texte);
+    aff_pol_centre(texte,TAILLE_POLICE,centre,noir);
 }
 
 
@@ -97,10 +98,14 @@ void afficher_les_boutons(ACTION A) {
 void afficher_les_boutons_mode_creation(ACTION A) {
     // Le 3ème argument vaut 0 ou 1 selon que c'est le mode actif ou non
     afficher_un_bouton(0,"Quit", A.mode==QUIT);
-    afficher_un_bouton(4,"Save", A.mode==SAVE);
-    afficher_un_bouton(5,"Init", A.mode==INIT);
+    afficher_un_bouton(1,"Init", A.mode==INIT);
+    afficher_un_bouton(2,"Undo", A.mode==INIT);
+    afficher_un_bouton(3,"Redo", A.mode==INIT);
+    afficher_un_bouton(4,"Valid", A.mode==SAVE);
+    afficher_un_bouton(5,"Save", A.mode==SAVE);
+    
     afficher_bouton_deplacement();
-    affichage_secondaire_mode_creation();
+    affichage_secondaire_mode_creation(A);
     //afficher_un_bouton(6,"Crea", A.mode==CREA);   
 }
 
@@ -122,7 +127,19 @@ void afficher_bouton_deplacement(){
     draw_fill_rectangle(gauche1,gauche2,COUL_BOUTON);
 }
 
-void affichage_secondaire_mode_creation(){
+void afficher_lemode_de_creation_utilise(ACTION a){
+    POINT p; p.x=850; p.y=380;
+    if(a.mode==ACTION_MUR)
+        aff_pol("Mode: Mur",14,p,blanc);
+    if(a.mode==ACTION_HOMME)
+        aff_pol("Mode: Homme",14,p,blanc);
+    if(a.mode==ACTION_CAISSE )
+        aff_pol("Mode: Caisse",14,p,blanc);
+    if(a.mode==ACTION_OBJECTIF)
+        aff_pol("Mode: Objectif",14,p,blanc);
+}
+
+void affichage_secondaire_mode_creation(ACTION a){
     POINT p1,p_caisse, p_mur, p_objectif, p_homme;
 
     p1.x=11; p1.y=615;
@@ -139,6 +156,9 @@ void affichage_secondaire_mode_creation(){
 
     p_homme.x=950; p_homme.y=485;
     aff_pol("Homme",14,p_homme,bleumarine);
+
+    afficher_lemode_de_creation_utilise(a);
+    trait_en_dessous_lettre_mode_creation();
 }
 
 void affichage_secondaire_stage(int stage){
@@ -155,7 +175,26 @@ void affichage_secondaire_nb_move(int nb_move){
     aff_int(nb_move,12,p2,blanc);
 }
 
-void traie_en_dessous_lettre(){
+void trait_en_dessous_lettre(){
+    POINT p1, p2;
+    p1.x=32; p1.y=610; p2.x=48; p2.y=610;
+    draw_line(p1,p2,noir);
+    p1.x=135; p1.y=610; p2.x=148; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=243; p2.y=610; p2.x=258; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=355; p2.y=610; p2.x=367; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=460; p2.y=610; p2.x=472; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=566; p2.y=610; p2.x=580; p2.y=610; 
+    draw_line(p1,p2,noir);
+    p1.x=675; p2.y=610; p2.x=688; p2.y=610; 
+    draw_line(p1,p2,noir);
+}
+
+
+void trait_en_dessous_lettre_mode_creation(){
     POINT p1, p2;
     p1.x=32; p1.y=610; p2.x=48; p2.y=610;
     draw_line(p1,p2,noir);
@@ -178,7 +217,7 @@ void afficher_sokoban(ACTION A,TABLEAU T, int stage, int nb_move) {
     afficher_les_boutons(A);
     afficher_bouton_deplacement();
     affichage_secondaire_stage(stage);
-    traie_en_dessous_lettre();
+    trait_en_dessous_lettre();
     affichage_secondaire_nb_move(nb_move);
     cadre_du_jeu();
     //quadrillage();
@@ -189,6 +228,7 @@ void afficher_mode_creation(ACTION A, TABLEAU T){
     fill_screen(noir);
     afficher_les_boutons_mode_creation(A);
     quadrillage();
+    afficher_les_boutons_mode_creation(A);
 }
 
 TABLEAU modifier_sudoku_action (ACTION A, TABLEAU t,int stage) {
@@ -219,6 +259,14 @@ TABLEAU modifier_sudoku_action (ACTION A, TABLEAU t,int stage) {
     }
     return t;
   
+}
+
+void afficher_victoire(){
+    POINT p1,p2;
+    p1.x=50; p1.y=70;
+    aff_pol("VICTOIRE!",25,p1,rouge);
+    p1.x=60; p1.y=40;
+    aff_pol("Appuyer sur \"s\" pour passer au niveau suivant...",12,p1,rouge);
 }
 
 
@@ -343,8 +391,7 @@ void afficher_jeu(TABLEAU T) {
                 draw_fill_rectangle(hg,bd,red); 
             }
         }
-    }
-    
+    }   
 }
 
 

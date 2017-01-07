@@ -22,6 +22,7 @@
 #define RIEN   10
 #define CREA   11
 #define SAVE   12
+#define VALIDE 17
 
 #define ACTION_MUR      13
 #define ACTION_HOMME    14
