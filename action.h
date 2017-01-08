@@ -18,10 +18,8 @@ struct action {
 typedef struct action ACTION;
 
 ACTION recuperer_action();
-ACTION recuperer_action_mode_creation(ACTION a);
 int mode_action(ACTION A);
-
-void test_arrow();
+ACTION recuperer_action_mode_creation(ACTION a);
 
 
 #endif

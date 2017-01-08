@@ -20,8 +20,9 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
     char caractereActuel = 0;
     int s, n=0, m=0;
 
-    //fichier = fopen("sasquatch1.xsb", "r");
-    fichier = fopen("test.txt", "r");
+    //fichier = fopen("sauvegarde.xsb", "r");
+    fichier = fopen("sasquatch1.xsb", "r");
+    //fichier = fopen("test.txt", "r");
 
     if(fichier != NULL) {
         for(s=-1; s<stage;s++){
@@ -30,7 +31,7 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
                 if(stage-1==s){
                     printf("%c", caractereActuel);
                     //t.array[n][m]=caractereActuel;    
-                    t.array[n][m]=tableau_chiffe(caractereActuel);
+                    t.array[n][m]=tableau_chiffre(caractereActuel);
                     n++;
                     if (caractereActuel=='\n'){
                         m++; 
@@ -48,7 +49,7 @@ TABLEAU selection_stage(int stage, TABLEAU t) {
 
 
 
-int tableau_chiffe(int caractere){
+int tableau_chiffre(int caractere){
 
     if(caractere=='#')      //1 # mur
         return 1;
@@ -58,12 +59,37 @@ int tableau_chiffe(int caractere){
         return 3;
     if(caractere=='@')      //4 @ homme
         return 4;   
-   /* if (caractere=='\n')
-        return '\n';*/
     if(caractere==' ')      
         return 5;
+    if(caractere=='*')
+        return CAISSE_OBJECTIF;
+    if(caractere=='+')
+        return HOMME_OBJECTIF;
 
     return -2;
+}
+
+
+int tableau_chiffre_inverse(int caractere){
+
+    if(caractere==-1)      
+        return ' ';
+    if(caractere==1)      //1 # mur
+        return '#';
+    if(caractere==2)      //2 $ caisse
+        return '$';
+    if(caractere==3)      //3 . objectif
+        return '.';
+    if(caractere==4)      //4 @ homme
+        return '@';   
+    if(caractere==5)      
+        return ' ';
+    if(caractere==CAISSE_OBJECTIF)
+        return '*';
+    if(caractere==HOMME_OBJECTIF)
+        return '+';
+
+    return ' ';
 }
 
 // A MODIFIER, POUR LES COULEURS DES BOUTONS
@@ -136,43 +162,7 @@ void afficher_lemode_de_creation_utilise(ACTION a){
     if(a.mode==ACTION_CAISSE )
         aff_pol("Mode: Caisse",14,p,blanc);
     if(a.mode==ACTION_OBJECTIF)
-        aff_pol("Mode: Objectif",14,p,blanc);
-}
-
-void affichage_secondaire_mode_creation(ACTION a){
-    POINT p1,p_caisse, p_mur, p_objectif, p_homme;
-
-    p1.x=11; p1.y=615;
-    aff_pol("mode_creation",10,p1,noir);
-
-    p_mur.x=906; p_mur.y=539;
-    aff_pol("Mur",20,p_mur,bleumarine);
-
-    p_caisse.x=850; p_caisse.y=490;
-    aff_pol("Caisse",16,p_caisse,bleumarine);
-
-    p_objectif.x=900; p_objectif.y=435;
-    aff_pol("Objectif",13,p_objectif,bleumarine);
-
-    p_homme.x=950; p_homme.y=485;
-    aff_pol("Homme",14,p_homme,bleumarine);
-
-    afficher_lemode_de_creation_utilise(a);
-    trait_en_dessous_lettre_mode_creation();
-}
-
-void affichage_secondaire_stage(int stage){
-    POINT p1, p2;
-    p1.x=30; p1.y=600; p2.x=80; p2.y=600;
-    aff_pol("Stage=",12,p1,blanc);
-    aff_int(stage,12,p2,blanc);
-}
-
-void affichage_secondaire_nb_move(int nb_move){
-    POINT p1, p2;
-    p1.x=100; p1.y=600; p2.x=145; p2.y=600;
-    aff_pol("Move=",12,p1,blanc);
-    aff_int(nb_move,12,p2,blanc);
+        aff_pol("Mode: Vide",14,p,blanc);
 }
 
 void trait_en_dessous_lettre(){
@@ -269,6 +259,44 @@ void afficher_victoire(){
     aff_pol("Appuyer sur \"s\" pour passer au niveau suivant...",12,p1,rouge);
 }
 
+/************************************************************************/
+//Affichage secondaire
+
+void affichage_secondaire_mode_creation(ACTION a){
+    POINT p1,p_caisse, p_mur, p_objectif, p_homme;
+
+    p1.x=11; p1.y=615;
+    aff_pol("mode_creation",10,p1,noir);
+
+    p_mur.x=906; p_mur.y=539;
+    aff_pol("Mur",20,p_mur,bleumarine);
+
+    p_caisse.x=850; p_caisse.y=490;
+    aff_pol("Caisse",16,p_caisse,bleumarine);
+
+    p_objectif.x=903; p_objectif.y=440;
+    aff_pol("Vide",19,p_objectif,bleumarine);
+
+    p_homme.x=950; p_homme.y=485;
+    aff_pol("Homme",14,p_homme,bleumarine);
+
+    afficher_lemode_de_creation_utilise(a);
+    trait_en_dessous_lettre_mode_creation();
+}
+
+void affichage_secondaire_stage(int stage){
+    POINT p1, p2;
+    p1.x=30; p1.y=600; p2.x=80; p2.y=600;
+    aff_pol("Stage=",12,p1,blanc);
+    aff_int(stage,12,p2,blanc);
+}
+
+void affichage_secondaire_nb_move(int nb_move){
+    POINT p1, p2;
+    p1.x=100; p1.y=600; p2.x=145; p2.y=600;
+    aff_pol("Move=",12,p1,blanc);
+    aff_int(nb_move,12,p2,blanc);
+}
 
 /************************************************************************/
 //Limite du tableau sur l'interface graphique
@@ -381,7 +409,6 @@ void afficher_jeu(TABLEAU T) {
                 graph_croix(hg,bd);
             if(T.array[n][m]==HOMME ){      //4 @ homme
                 graph_homme(hg);  
-                //POINT homme;
                 //printf("x=%d y=%d \n\n",homme.x, homme.y);
             }
             if(T.array[n][m]==HOMME_OBJECTIF){    // ou 6 homme avec objectif en dessous

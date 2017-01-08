@@ -16,7 +16,6 @@ TABLEAU initTab(TABLEAU t) {
 			t.array[n][m]=-1;
 		}
 	}
-
 	return t;	
 }
 
@@ -28,7 +27,6 @@ TABLEAU initTab_MUR(TABLEAU t) {
 			t.array[n][m]=MUR;
 		}
 	}
-
 	return t;	
 }
 
@@ -69,7 +67,6 @@ POINT recup_pos_homme(TABLEAU T){
 			}
 		}
 	}
-
 	P.x=0; P.y=0;
 	return P;
 }
@@ -126,7 +123,6 @@ TABLEAU ajouter_mur(ACTION a, TABLEAU t){
 			}	
 		}
 	}	
-
 	return t;
 }
 
@@ -162,11 +158,9 @@ TABLEAU ajouter_tab_mode_creation(ACTION a, TABLEAU t){
 			temp=VIDE;
 	}
 	if(a.mode==ACTION_CAISSE)
-		temp=CAISSE;
+		temp=CAISSE_OBJECTIF;
 	if(a.mode==ACTION_OBJECTIF)
-		temp=OBJECTIF;
-
-
+		temp=VIDE;
 
 	for(m=0; m<t.taille-1; m++){
 		for(n=0; n<t.taille-1; n++){
@@ -208,18 +202,22 @@ TABLEAU retournee_tableau(TABLEAU t1){
 void sauvegarde(TABLEAU t){
 	FILE* fichier = NULL;
 	int n,m;
+	//int temp;
 
     fichier = fopen("sauvegarde.xsb", "w");
 
     if(fichier != NULL) {
-    	//fputc('a',fichier);
+    	fputc(';',fichier);fputc('\n',fichier);fputc('\n',fichier);
 		for(m=0; m<NB_CASE_ABSCISSE; m++){
 			for(n=0; n<NB_CASE_ORDONNE; n++) {
+				//temp=tableau_chiffre_inverse(t.array[n][m]);
+				//fprintf(fichier, "%d", temp);
 				fprintf(fichier, "%d ", t.array[n][m]);
     		}
     		fputc('\n',fichier);
     	}
-        fclose(fichier);
+    	fputc('\n',fichier);fputc(';',fichier);fputc('\n',fichier);
+        //fclose(fichier);
     }
 
 }
@@ -228,6 +226,13 @@ void sauvegarde(TABLEAU t){
 
 llist ajouter_deplacement_liste(ACTION a, llist ma_liste1, TABLEAU t){
 	if(a.mode==GAUCHE || a.mode==DROITE || a.mode==HAUT || a.mode==BAS || a.mode==INIT)
+		ma_liste1=ajouter_debut(ma_liste1,t);
+	return ma_liste1;
+}
+
+llist ajouter_deplacement_liste_mode_creation(ACTION a, llist ma_liste1, TABLEAU t){
+	if(a.mode==ACTION_OBJECTIF || a.mode==ACTION_CAISSE 
+		|| a.mode==ACTION_HOMME|| a.mode==ACTION_MUR)
 		ma_liste1=ajouter_debut(ma_liste1,t);
 	return ma_liste1;
 }
@@ -291,7 +296,6 @@ llist ajouter_fin(llist liste, TABLEAU tab){
 	return liste;
 }
 
-
 llist supprimerElement_debut(llist liste){
 	if(liste != NULL){
 		element* aRenvoyer = liste->nxt;
@@ -301,7 +305,6 @@ llist supprimerElement_debut(llist liste){
 		return NULL;
 	}
 }
-
 
 llist supprimerElement_Fin(llist liste){
 
@@ -325,7 +328,6 @@ llist supprimerElement_Fin(llist liste){
     free(tmp);
    	return liste;
 }
-
 
 llist supprimer_liste(llist liste){
 	while(liste!=NULL){
@@ -371,8 +373,6 @@ TABLEAU move_caisse_bas(TABLEAU t, POINT homme){
 	return t;
 }
 
-
-
 TABLEAU move_goal_gauche(TABLEAU t, POINT homme){
 	
 	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x-1][homme.y]==VIDE){ //Sur objectif et case a cote rien
@@ -413,6 +413,12 @@ TABLEAU move_goal_gauche(TABLEAU t, POINT homme){
 		t.array[homme.x][homme.y]=OBJECTIF;
 		t.array[homme.x-1][homme.y]=HOMME;
 		t.array[homme.x-2][homme.y]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x-1][homme.y]==CAISSE
+		&& t.array[homme.x-2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x-1][homme.y]=HOMME;
+		t.array[homme.x-2][homme.y]=CAISSE_OBJECTIF;
 	}
 	return t;
 }
@@ -458,6 +464,12 @@ TABLEAU move_goal_droite(TABLEAU t, POINT homme){
 		t.array[homme.x+1][homme.y]=HOMME;
 		t.array[homme.x+2][homme.y]=CAISSE;
 	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x+1][homme.y]==CAISSE
+		&& t.array[homme.x+2][homme.y]==OBJECTIF){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x+1][homme.y]=HOMME;
+		t.array[homme.x+2][homme.y]=CAISSE_OBJECTIF;
+	}
 	return t;
 }
 
@@ -501,6 +513,12 @@ TABLEAU move_goal_haut(TABLEAU t, POINT homme){
 		t.array[homme.x][homme.y]=OBJECTIF;
 		t.array[homme.x][homme.y-1]=HOMME;
 		t.array[homme.x][homme.y-2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y-1]==CAISSE
+		&& t.array[homme.x][homme.y-2]==OBJECTIF){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x][homme.y-1]=HOMME;
+		t.array[homme.x][homme.y-2]=CAISSE_OBJECTIF;
 	}
 	return t;
 }
@@ -546,6 +564,12 @@ TABLEAU move_goal_bas(TABLEAU t, POINT homme){
 		t.array[homme.x][homme.y]=OBJECTIF;
 		t.array[homme.x][homme.y+1]=HOMME;
 		t.array[homme.x][homme.y+2]=CAISSE;
+	}
+	if(t.array[homme.x][homme.y]==HOMME_OBJECTIF && t.array[homme.x][homme.y+1]==CAISSE
+		&& t.array[homme.x][homme.y+2]==OBJECTIF){
+		t.array[homme.x][homme.y]=OBJECTIF;
+		t.array[homme.x][homme.y+1]=HOMME;
+		t.array[homme.x][homme.y+2]=CAISSE_OBJECTIF;
 	}
 	return t;
 }

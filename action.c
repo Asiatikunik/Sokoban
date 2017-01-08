@@ -95,8 +95,8 @@ ACTION recuperer_action_mode_creation(ACTION A) {
 		else if ((P.x < 2*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='i') { A.mode = INIT; return A; }
 		else if ((P.x < 3*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='u') { A.mode = UNDO; return A; } 
 		else if ((P.x < 4*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='r') { A.mode = REDO; return A; }
-		else if ((P.x < 5*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='s') { A.mode = SAVE; return A; }  
-		else if ((P.x < 6*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='v') { A.mode = VALIDE; return A; } 
+		else if ((P.x < 5*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='v') { A.mode = VALIDE; return A; }  
+		else if ((P.x < 6*LARG_BOUTON && P.y > N*TAILLE_CASE) || c=='s') { A.mode = SAVE; return A; } 
 		else if ((850<P.x && P.x<900 && 450<P.y && P.y<500) || P.x==-1) { A.mode = ACTION_CAISSE; return A; } 
 		else if ((950<P.x && P.x<1000 && 450<P.y && P.y<500) || P.x==1) { A.mode = ACTION_HOMME; return A; }
 		else if ((900<P.x && P.x<950 && 500<P.y && P.y<550) || P.y==1) { A.mode = ACTION_MUR; return A; }

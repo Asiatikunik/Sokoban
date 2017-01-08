@@ -11,38 +11,37 @@
 void mode_creation(){
     ACTION a;
     TABLEAU t;
-    llist ma_liste1=NULL;
-    llist ma_liste2=NULL;
+    llist ma_liste3=NULL;
+    llist ma_liste4=NULL;
         
     a.mode=100;
     t=initTab(t);
-    //t=initTab_MUR(t);
     afficher_mode_creation(a, t);
     do{
         a = recuperer_action_mode_creation(a);
         printf("MODEEEEEEEEEEEEEEE %d \n",a.mode);
-        ma_liste1=ajouter_debut(ma_liste1,t);
+
+        ma_liste3=ajouter_deplacement_liste_mode_creation(a, ma_liste3, t);
 
         if(a.mode == UNDO){
-            if(ma_liste1!=NULL){
-                ma_liste2=ajouter_debut(ma_liste2, t);
-                t=ma_liste1->azerty;
+            if(ma_liste3!=NULL){
+                ma_liste4=ajouter_debut(ma_liste4, t);
+                t=ma_liste3->azerty;
                 //ma_liste1=ma_liste1->nxt;
-                element* temp = ma_liste1->nxt;
-                free(ma_liste1);
-                ma_liste1=temp;
-                printf("SALUT\n");
+                element* temp = ma_liste3->nxt;
+                free(ma_liste3);
+                ma_liste3=temp;
             }    
         }
 
         if(a.mode == REDO){
-            if(ma_liste2!=NULL){
-                ma_liste1=ajouter_debut(ma_liste1, t);
-                t=ma_liste2->azerty;
+            if(ma_liste4!=NULL){
+                ma_liste3=ajouter_debut(ma_liste3, t);
+                t=ma_liste4->azerty;
                 //ma_liste2=ma_liste2->nxt;
-                element* temp = ma_liste2->nxt;
-                free(ma_liste2);
-                ma_liste2=temp;
+                element* temp = ma_liste4->nxt;
+                free(ma_liste4);
+                ma_liste4=temp;
             }
         }
         if(a.mode==INIT){
@@ -50,16 +49,12 @@ void mode_creation(){
             a.mode=ACTION_MUR;
         }
         if(a.mode==SAVE){
-            printf("YOLO\n");
             sauvegarde(t);
-            printf("azn situation\n");
         }
         afficher_mode_creation(a, t);
         t=ajout_tableau_creation(a, t);
         afficher_jeu(t);
-        //afficherTab(t);
     }while(mode_action(a)!=QUIT);
-
 }
 
 void mode_jeu(){
@@ -110,16 +105,14 @@ void mode_jeu(){
                 ma_liste2=temp;
             }
         }
-
         
         if(a.mode==INIT){
             t=selection_stage(stage, t);
             t.move=0;
         }
 
-        if(a.mode==CREA){
+        if(a.mode==CREA)
             mode_creation();
-        }
 
         //afficherListe(ma_liste1);
         t=apres_clic_mouvement(t,a);
@@ -132,12 +125,10 @@ void mode_jeu(){
         }
 
     }while(mode_action(a)!=QUIT);
-    
 }
 
 int main(int argc, char *argv[]){
-    
-    
+      
     mode_jeu();
 
     //initialiser_affichage();
